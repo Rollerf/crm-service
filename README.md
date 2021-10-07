@@ -11,5 +11,5 @@ docker volume create crm-service-db-data
 
 Create postgre database using the volume created before:
 ```bash
-sudo docker run -d -p 33070:5432 --name crm-service-db  -e POSTGRES_PASSWORD=password --mount src=crm-service-db-data,dst=/var/lib/postgres postgres
+docker run -d -p 33070:5432 --name crm-service-db  -e POSTGRES_PASSWORD=password --mount src=crm-service-db-data,dst=/var/lib/postgres postgres
 ```
