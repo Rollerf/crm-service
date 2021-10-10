@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
     @NotNull
     private Boolean admin;

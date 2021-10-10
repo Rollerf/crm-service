@@ -24,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getLstCustomer() {
+    public List<Customer> getCustomersList() {
         return customerRepository.findAll();
     }
 
@@ -32,15 +32,15 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer updateCustomer(Long customerId, Customer customer) {
         Customer customerDB = customerRepository.findById(customerId).get();
 
-        if(StringUtils.hasText(customer.getName())){
+        if (StringUtils.hasText(customer.getName())) {
             customerDB.setName(customer.getName());
         }
 
-        if (StringUtils.hasText(customer.getSurname())){
+        if (StringUtils.hasText(customer.getSurname())) {
             customerDB.setSurname(customer.getSurname());
         }
 
-        if (Objects.nonNull(customer.getUpdatedBy())){
+        if (Objects.nonNull(customer.getUpdatedBy())) {
             customerDB.setUpdatedBy(customer.getUpdatedBy());
         }
 
