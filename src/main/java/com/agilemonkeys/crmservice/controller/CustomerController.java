@@ -26,10 +26,10 @@ public class CustomerController {
     @PostMapping("/customers")
     public CustomerDto saveCustomer(@Valid @RequestBody CustomerDto customerDto) {
         logger.info("Inside saveCustomer of customerController");
-        Customer customer = modelMapper.map(customerDto, Customer.class);
+        Customer customer = dtoToCustomer(customerDto);
         Customer customerSaved = customerService.saveCustomer(customer);
 
-        return modelMapper.map(customerSaved, CustomerDto.class);
+        return customerToDto(customerSaved);
     }
 
     @GetMapping("/customers")
@@ -38,17 +38,17 @@ public class CustomerController {
 
         return customerService.getCustomersList()
                 .stream()
-                .map(element -> modelMapper.map(element, CustomerDto.class))
+                .map(this::customerToDto)
                 .collect(Collectors.toList());
     }
 
     @PutMapping("/customers")
     public CustomerDto updateCustomer(@PathVariable("id") Long customerId, @Valid @RequestBody CustomerDto customerDto) {
         logger.info("Inside updateCustomer of customerController");
-        Customer customer = modelMapper.map(customerDto, Customer.class);
+        Customer customer = dtoToCustomer(customerDto);
         Customer customerSaved = customerService.updateCustomer(customerId, customer);
 
-        return modelMapper.map(customerSaved, CustomerDto.class);
+        return customerToDto(customerSaved);
     }
 
     @GetMapping("/customers/{id}")
@@ -56,7 +56,7 @@ public class CustomerController {
         logger.info("Inside getCustomer of customerController");
         Customer customer = customerService.getCustomerById(customerId);
 
-        return modelMapper.map(customer, CustomerDto.class);
+        return customerToDto(customer);
     }
 
     @DeleteMapping("/customers/{id}")
@@ -65,5 +65,13 @@ public class CustomerController {
         customerService.deleteCustomerById(customerId);
 
         return "Customer deleted successfully";
+    }
+
+    private Customer dtoToCustomer(CustomerDto customerDto) {
+        return modelMapper.map(customerDto, Customer.class);
+    }
+
+    private CustomerDto customerToDto(Customer customer) {
+        return modelMapper.map(customer, CustomerDto.class);
     }
 }
