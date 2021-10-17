@@ -2,8 +2,7 @@ package com.agilemonkeys.crmservice.service;
 
 import com.agilemonkeys.crmservice.entity.Customer;
 import com.agilemonkeys.crmservice.repository.CustomerRepository;
-import com.agilemonkeys.crmservice.service.CustomerService;
-import org.slf4j.Logger;
+import com.agilemonkeys.crmservice.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,6 +17,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    PhotoRepository photoRepository;
+
     @Override
     public Customer saveCustomer(Customer customer) {
         return customerRepository.save(customer);
@@ -29,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(Long customerId, Customer customer) {
+    public Customer updateCustomerById(Long customerId, Customer customer) {
         Customer customerDB = customerRepository.findById(customerId).get();
 
         if (StringUtils.hasText(customer.getName())) {
@@ -38,6 +40,10 @@ public class CustomerServiceImpl implements CustomerService {
 
         if (StringUtils.hasText(customer.getSurname())) {
             customerDB.setSurname(customer.getSurname());
+        }
+
+        if (Objects.nonNull(customer.getCreatedBy())) {
+            customerDB.setCreatedBy(customer.getCreatedBy());
         }
 
         if (Objects.nonNull(customer.getUpdatedBy())) {
@@ -56,6 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomerById(Long customerId) {
+        photoRepository.deleteById(customerId);
         customerRepository.deleteById(customerId);
     }
 }

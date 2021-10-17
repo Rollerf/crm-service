@@ -54,7 +54,7 @@ public class UserController {
     public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto){
         logger.info("Inside updateUser of userController");
         User user = dtoToUser(userDto);
-        User userSaved = userService.updateUser(userId, user);
+        User userSaved = userService.updateUserById(userId, user);
 
         return userToDto(userSaved);
     }

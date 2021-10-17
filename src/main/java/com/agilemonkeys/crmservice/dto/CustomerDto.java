@@ -13,7 +13,7 @@ public class CustomerDto {
     private Long customerId;
     private String name;
     private String surname;
-    private Byte[] profilePicture;
     private Long createdBy;
     private Long updatedBy;
+    private String imageUrl;
 }

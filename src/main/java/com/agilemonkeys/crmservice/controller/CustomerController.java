@@ -3,6 +3,7 @@ package com.agilemonkeys.crmservice.controller;
 import com.agilemonkeys.crmservice.dto.CustomerDto;
 import com.agilemonkeys.crmservice.entity.Customer;
 import com.agilemonkeys.crmservice.service.CustomerService;
+import com.agilemonkeys.crmservice.service.PhotoService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private PhotoService photoService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -42,11 +46,11 @@ public class CustomerController {
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("/customers")
+    @PutMapping("/customers/{id}")
     public CustomerDto updateCustomer(@PathVariable("id") Long customerId, @Valid @RequestBody CustomerDto customerDto) {
         logger.info("Inside updateCustomer of customerController");
         Customer customer = dtoToCustomer(customerDto);
-        Customer customerSaved = customerService.updateCustomer(customerId, customer);
+        Customer customerSaved = customerService.updateCustomerById(customerId, customer);
 
         return customerToDto(customerSaved);
     }
@@ -56,13 +60,22 @@ public class CustomerController {
         logger.info("Inside getCustomer of customerController");
         Customer customer = customerService.getCustomerById(customerId);
 
-        return customerToDto(customer);
+        CustomerDto customerDto = customerToDto(customer);
+
+        if(photoService.isPhotoExist(customerId)){
+            customerDto.setImageUrl("http://localhost:8080/photos/" + customerId);
+        }
+
+        return customerDto;
     }
 
     @DeleteMapping("/customers/{id}")
     public String deleteCustomerById(@PathVariable("id") Long customerId) {
         logger.info("Inside deleteCustomerById of customerController");
+
+        photoService.deletePhotoById(customerId);
         customerService.deleteCustomerById(customerId);
+
 
         return "Customer deleted successfully";
     }

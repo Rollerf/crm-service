@@ -1,18 +1,16 @@
 package com.agilemonkeys.crmservice.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity(name = "customers")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +19,8 @@ public class Customer {
     private String name;
     @NotBlank
     private String surname;
-    @Lob
-    private Byte[] profilePicture;
     private Long createdBy;
     private Long updatedBy;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer", optional = false)
+    private Photo photo;
 }
