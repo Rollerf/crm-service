@@ -29,7 +29,7 @@ public class PhotoController {
     private final Logger logger = LoggerFactory.getLogger(PhotoController.class);
 
     @PostMapping("/photos/{id}")
-    public String uploadFile(@PathVariable("id") Long customerId, @RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadFile(@PathVariable("id") Long customerId, @Valid @RequestParam("file") MultipartFile file) throws IOException {
         logger.info("Inside savePhoto of photoController");
 
         Customer customer = customerService.getCustomerById(customerId);

@@ -72,10 +72,7 @@ public class CustomerController {
     @DeleteMapping("/customers/{id}")
     public String deleteCustomerById(@PathVariable("id") Long customerId) {
         logger.info("Inside deleteCustomerById of customerController");
-
-        photoService.deletePhotoById(customerId);
         customerService.deleteCustomerById(customerId);
-
 
         return "Customer deleted successfully";
     }

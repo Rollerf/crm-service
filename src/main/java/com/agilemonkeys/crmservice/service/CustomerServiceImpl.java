@@ -62,7 +62,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomerById(Long customerId) {
-        photoRepository.deleteById(customerId);
+        if(photoRepository.existsById(customerId)){
+            photoRepository.deleteById(customerId);
+        }
         customerRepository.deleteById(customerId);
     }
 }
