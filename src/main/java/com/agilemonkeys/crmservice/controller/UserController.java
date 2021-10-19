@@ -2,6 +2,7 @@ package com.agilemonkeys.crmservice.controller;
 
 import com.agilemonkeys.crmservice.dto.UserDto;
 import com.agilemonkeys.crmservice.entity.User;
+import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public String deleteUserById(@PathVariable("id") Long userId) {
+    public String deleteUserById(@PathVariable("id") Long userId) throws NotFoundException {
         logger.info("Inside deleteUserById of userController");
         userService.deleteUserById(userId);
 
@@ -51,7 +52,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto){
+    public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) throws NotFoundException {
         logger.info("Inside updateUser of userController");
         User user = dtoToUser(userDto);
         User userSaved = userService.updateUserById(userId, user);

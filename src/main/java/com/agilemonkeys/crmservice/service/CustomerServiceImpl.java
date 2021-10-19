@@ -1,15 +1,16 @@
 package com.agilemonkeys.crmservice.service;
 
 import com.agilemonkeys.crmservice.entity.Customer;
+import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.repository.CustomerRepository;
 import com.agilemonkeys.crmservice.repository.PhotoRepository;
+import com.agilemonkeys.crmservice.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -31,8 +32,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomerById(Long customerId, Customer customer) {
-        Customer customerDB = customerRepository.findById(customerId).get();
+    public Customer updateCustomerById(Long customerId, Customer customer) throws NotFoundException {
+        Customer customerDB = customerRepository.findById(customerId)
+                .orElseThrow(() -> new NotFoundException(Constants.INVALID_CUSTOMER_ID));
 
         if (StringUtils.hasText(customer.getName())) {
             customerDB.setName(customer.getName());
@@ -54,17 +56,21 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerById(Long customerId) {
-        Optional<Customer> customer = customerRepository.findById(customerId);
-
-        return customer.get();
+    public Customer getCustomerById(Long customerId) throws NotFoundException {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new NotFoundException(Constants.INVALID_CUSTOMER_ID));
     }
 
     @Override
-    public void deleteCustomerById(Long customerId) {
-        if(photoRepository.existsById(customerId)){
+    public void deleteCustomerById(Long customerId) throws NotFoundException {
+        if (photoRepository.existsById(customerId)) {
             photoRepository.deleteById(customerId);
         }
-        customerRepository.deleteById(customerId);
+
+        if(customerRepository.existsById(customerId)){
+            customerRepository.deleteById(customerId);
+        } else {
+            throw new NotFoundException(Constants.INVALID_CUSTOMER_ID);
+        }
     }
 }

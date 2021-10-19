@@ -1,6 +1,7 @@
 package com.agilemonkeys.crmservice.service;
 
 import com.agilemonkeys.crmservice.entity.Customer;
+import com.agilemonkeys.crmservice.error.NotFoundException;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface CustomerService {
 
     List<Customer> getCustomersList();
 
-    Customer updateCustomerById(Long customerId, Customer customer);
+    Customer updateCustomerById(Long customerId, Customer customer) throws NotFoundException;
 
-    Customer getCustomerById(Long customerId);
+    Customer getCustomerById(Long customerId) throws NotFoundException;
 
-    void deleteCustomerById(Long customerId);
+    void deleteCustomerById(Long customerId) throws NotFoundException;
 }

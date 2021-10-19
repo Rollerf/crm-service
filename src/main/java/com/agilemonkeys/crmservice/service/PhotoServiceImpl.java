@@ -1,11 +1,11 @@
 package com.agilemonkeys.crmservice.service;
 
 import com.agilemonkeys.crmservice.entity.Photo;
+import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.repository.PhotoRepository;
+import com.agilemonkeys.crmservice.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -19,21 +19,29 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public void deletePhotoById(Long customerId) {
-        photoRepository.deleteById(customerId);
+    public void deletePhotoById(Long customerId) throws NotFoundException {
+        try {
+            photoRepository.deleteById(customerId);
+        } catch (Exception e) {
+            throw new NotFoundException(Constants.INVALID_PHOTO_ID);
+        }
     }
 
     @Override
-    public Photo updatePhotoById(Long customerId, Photo photo) {
-        photoRepository.deleteById(customerId);
+    public Photo updatePhotoById(Long customerId, Photo photo) throws NotFoundException {
+        try {
+            photoRepository.deleteById(customerId);
+        } catch (Exception e) {
+            throw new NotFoundException(Constants.INVALID_PHOTO_ID);
+        }
 
         return photoRepository.save(photo);
     }
 
     @Override
-    public Photo getPhotoById(Long customerId) {
-        Optional<Photo> photo = photoRepository.findById(customerId);
-        return photo.get();
+    public Photo getPhotoById(Long customerId) throws NotFoundException {
+        return photoRepository.findById(customerId)
+                .orElseThrow(() -> new NotFoundException(Constants.INVALID_PHOTO_ID));
     }
 
     @Override

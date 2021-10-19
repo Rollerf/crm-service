@@ -2,6 +2,7 @@ package com.agilemonkeys.crmservice.controller;
 
 import com.agilemonkeys.crmservice.dto.CustomerDto;
 import com.agilemonkeys.crmservice.entity.Customer;
+import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.service.CustomerService;
 import com.agilemonkeys.crmservice.service.PhotoService;
 import org.modelmapper.ModelMapper;
@@ -47,7 +48,7 @@ public class CustomerController {
     }
 
     @PutMapping("/customers/{id}")
-    public CustomerDto updateCustomer(@PathVariable("id") Long customerId, @Valid @RequestBody CustomerDto customerDto) {
+    public CustomerDto updateCustomer(@PathVariable("id") Long customerId, @Valid @RequestBody CustomerDto customerDto) throws NotFoundException {
         logger.info("Inside updateCustomer of customerController");
         Customer customer = dtoToCustomer(customerDto);
         Customer customerSaved = customerService.updateCustomerById(customerId, customer);
@@ -56,13 +57,13 @@ public class CustomerController {
     }
 
     @GetMapping("/customers/{id}")
-    public CustomerDto getCustomer(@PathVariable("id") Long customerId) {
+    public CustomerDto getCustomer(@PathVariable("id") Long customerId) throws NotFoundException {
         logger.info("Inside getCustomer of customerController");
         Customer customer = customerService.getCustomerById(customerId);
 
         CustomerDto customerDto = customerToDto(customer);
 
-        if(photoService.isPhotoExist(customerId)){
+        if (photoService.isPhotoExist(customerId)) {
             customerDto.setImageUrl("http://localhost:8080/photos/" + customerId);
         }
 
@@ -70,7 +71,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/customers/{id}")
-    public String deleteCustomerById(@PathVariable("id") Long customerId) {
+    public String deleteCustomerById(@PathVariable("id") Long customerId) throws NotFoundException {
         logger.info("Inside deleteCustomerById of customerController");
         customerService.deleteCustomerById(customerId);
 
