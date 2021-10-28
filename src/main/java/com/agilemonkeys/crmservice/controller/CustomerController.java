@@ -3,12 +3,14 @@ package com.agilemonkeys.crmservice.controller;
 import com.agilemonkeys.crmservice.dto.CustomerDto;
 import com.agilemonkeys.crmservice.entity.Customer;
 import com.agilemonkeys.crmservice.error.NotFoundException;
+import com.agilemonkeys.crmservice.security.entity.UserPrincipal;
 import com.agilemonkeys.crmservice.service.CustomerService;
 import com.agilemonkeys.crmservice.service.PhotoService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,9 +31,13 @@ public class CustomerController {
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     @PostMapping("/customers")
-    public CustomerDto saveCustomer(@Valid @RequestBody CustomerDto customerDto) {
+    public CustomerDto saveCustomer(@Valid @RequestBody CustomerDto customerDto, Authentication authentication) {
         logger.info("Inside saveCustomer of customerController");
         Customer customer = dtoToCustomer(customerDto);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        customer.setCreatedBy(userPrincipal.getUserId());
+
         Customer customerSaved = customerService.saveCustomer(customer);
 
         return customerToDto(customerSaved);
@@ -48,9 +54,15 @@ public class CustomerController {
     }
 
     @PutMapping("/customers/{id}")
-    public CustomerDto updateCustomer(@PathVariable("id") Long customerId, @Valid @RequestBody CustomerDto customerDto) throws NotFoundException {
+    public CustomerDto updateCustomer(@PathVariable("id") Long customerId,
+                                      @Valid @RequestBody CustomerDto customerDto,
+                                      Authentication authentication) throws NotFoundException {
         logger.info("Inside updateCustomer of customerController");
         Customer customer = dtoToCustomer(customerDto);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        customer.setUpdatedBy(userPrincipal.getUserId());
+
         Customer customerSaved = customerService.updateCustomerById(customerId, customer);
 
         return customerToDto(customerSaved);

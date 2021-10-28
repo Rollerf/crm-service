@@ -8,4 +8,6 @@ public class Constants {
     public static final String INVALID_PHOTO_ID = "Invalid Id for Photo";
     public static final String INVALID_CUSTOMER_ID = "Invalid Id for Customer";
     public static final String INVALID_USER_ID = "Invalid Id for User";
+
+
 }

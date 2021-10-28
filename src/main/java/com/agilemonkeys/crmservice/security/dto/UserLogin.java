@@ -1,19 +1,19 @@
-package com.agilemonkeys.crmservice.dto;
+package com.agilemonkeys.crmservice.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserDto {
-    private Long userId;
+public class UserLogin {
+    @NotBlank
     private String userName;
+    @NotBlank
     private String password;
-    private Set<String> rolesName;
 }

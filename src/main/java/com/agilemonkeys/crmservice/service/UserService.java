@@ -13,4 +13,10 @@ public interface UserService {
     User updateUserById(Long userId, User user) throws NotFoundException;
 
     List<User> getUsersList();
+
+    User getByUserName(String userName) throws NotFoundException;
+
+    boolean existByUserName(String userName);
+
+    User changeAdminStatus(Long userId, User user) throws NotFoundException;
 }
