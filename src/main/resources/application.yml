@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  profiles: dev
+  url: http://localhost:8080
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:33070/postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+jwt:
+  secret: secret
+  expiration: 36_000_000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env,beans"
+
+---
+
+spring:
+  profiles: pre
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:33070/postgres-pre
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+jwt:
+  secret: secret
+  expiration: 36_000_000
+
+---
+
+spring:
+  profiles: pro
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:33070/postgres-pro
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+jwt:
+  secret: secret
+  expiration: 36_000_000

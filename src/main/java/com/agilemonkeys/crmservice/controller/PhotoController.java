@@ -5,7 +5,6 @@ import com.agilemonkeys.crmservice.entity.Photo;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.service.CustomerService;
 import com.agilemonkeys.crmservice.service.PhotoService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ public class PhotoController {
     PhotoService photoService;
     @Autowired
     CustomerService customerService;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     private final Logger logger = LoggerFactory.getLogger(PhotoController.class);
 
