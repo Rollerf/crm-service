@@ -12,7 +12,7 @@ spring:
   url: http://localhost:8080
   datasource:
     username: postgres
-    url: jdbc:postgresql://localhost:33070/postgres
+    url: jdbc:postgresql://db:5432/postgres
     password: password
   jpa:
     hibernate:
@@ -21,6 +21,8 @@ spring:
 jwt:
   secret: secret
   expiration: 36_000_000
+  tokenPrefix: "Bearer "
+  headerString: "Authorization"
 
 management:
   endpoints:
@@ -32,31 +34,18 @@ management:
 ---
 
 spring:
-  profiles: pre
-  datasource:
-    username: postgres
-    url: jdbc:postgresql://localhost:33070/postgres-pre
-    password: password
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: 'true'
-jwt:
-  secret: secret
-  expiration: 36_000_000
-
----
-
-spring:
   profiles: pro
+  url: http://localhost:8080
   datasource:
     username: postgres
-    url: jdbc:postgresql://localhost:33070/postgres-pro
+    url: jdbc:postgresql://db:5432/postgres
     password: password
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: 'true'
 jwt:
   secret: secret
   expiration: 36_000_000
+  tokenPrefix: "Bearer "
+  headerString: "Authorization"

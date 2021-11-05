@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  web:
+    build: .
+    links:
+      - db
+    container_name: crm-service-container
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+
+  db:
+    image: 'postgres:latest'
+    container_name: db
+    volumes:
+      - ./crm-service-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "33070:5432"

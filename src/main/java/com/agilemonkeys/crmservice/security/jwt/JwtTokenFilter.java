@@ -2,6 +2,7 @@ package com.agilemonkeys.crmservice.security.jwt;
 
 import com.agilemonkeys.crmservice.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
+    @Value("${jwt.tokenPrefix}")
+    private String tokenPrefix;
+
+    @Value("${jwt.headerString}")
+    private String headerString;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,10 +47,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private String getToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
+        String header = request.getHeader(headerString);
 
-        if (header != null && header.startsWith("Bearer"))
-            return header.replace("Bearer ", "");
+        if (header != null && header.startsWith(tokenPrefix))
+            return header.replace(tokenPrefix, "");
 
         return null;
     }
