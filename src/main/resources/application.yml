@@ -12,7 +12,7 @@ spring:
   url: http://localhost:8080
   datasource:
     username: postgres
-    url: jdbc:postgresql://db:5432/postgres
+    url: jdbc:postgresql://localhost:33070/postgres
     password: password
   jpa:
     hibernate:
@@ -23,7 +23,9 @@ jwt:
   expiration: 36_000_000
   tokenPrefix: "Bearer "
   headerString: "Authorization"
-
+logging:
+  level:
+    web: ${LOG_LEVEL:DEBUG}
 management:
   endpoints:
     web:
@@ -49,3 +51,6 @@ jwt:
   expiration: 36_000_000
   tokenPrefix: "Bearer "
   headerString: "Authorization"
+logging:
+  level:
+    web: ${LOG_LEVEL:WARN}

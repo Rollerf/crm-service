@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=pro
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
 
   db:
