@@ -3,6 +3,7 @@ package com.agilemonkeys.crmservice.controller;
 import com.agilemonkeys.crmservice.dto.NewUserDto;
 import com.agilemonkeys.crmservice.dto.UserDto;
 import com.agilemonkeys.crmservice.entity.User;
+import com.agilemonkeys.crmservice.error.DuplicateIdException;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.security.entity.Role;
 import com.agilemonkeys.crmservice.service.UserService;
@@ -36,7 +37,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/users")
-    public UserDto newUser(@Valid @RequestBody NewUserDto userDto) {
+    public UserDto newUser(@Valid @RequestBody NewUserDto userDto) throws DuplicateIdException {
         logger.info("Inside saveUser of userController");
 
         User user = utilService.dtoToUser(userDto);
@@ -72,7 +73,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{id}")
-    public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) throws NotFoundException {
+    public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) throws NotFoundException, DuplicateIdException {
         logger.info("Inside updateUser of userController");
         User user = utilService.dtoToUser(userDto);
 

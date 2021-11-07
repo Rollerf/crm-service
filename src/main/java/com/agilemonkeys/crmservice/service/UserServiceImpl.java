@@ -1,6 +1,7 @@
 package com.agilemonkeys.crmservice.service;
 
 import com.agilemonkeys.crmservice.entity.User;
+import com.agilemonkeys.crmservice.error.DuplicateIdException;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.repository.UserRepository;
 import com.agilemonkeys.crmservice.util.Constants;
@@ -18,8 +19,12 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    public User save(User user) throws DuplicateIdException {
+        try{
+            return userRepository.save(user);
+        } catch(Exception e) {
+            throw new DuplicateIdException(Constants.USER_NAME_ALREADY_EXIST);
+        }
     }
 
     @Override
@@ -32,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserById(Long userId, User user) throws NotFoundException {
+    public User updateUserById(Long userId, User user) throws NotFoundException, DuplicateIdException {
         User userDB = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(Constants.INVALID_USER_ID));
 
         if (StringUtils.hasText(user.getUserName())) {
@@ -43,7 +48,11 @@ public class UserServiceImpl implements UserService {
             userDB.setPassword(user.getPassword());
         }
 
-        return userRepository.save(userDB);
+        try{
+            return userRepository.save(userDB);
+        } catch(Exception e) {
+            throw new DuplicateIdException(Constants.USER_NAME_ALREADY_EXIST);
+        }
     }
 
     @Override
