@@ -1,11 +1,11 @@
 package com.agilemonkeys.crmservice.controller;
 
-import com.agilemonkeys.crmservice.dto.NewUserDto;
 import com.agilemonkeys.crmservice.dto.UserDto;
 import com.agilemonkeys.crmservice.entity.User;
 import com.agilemonkeys.crmservice.error.DuplicateIdException;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.security.entity.Role;
+import com.agilemonkeys.crmservice.service.MapService;
 import com.agilemonkeys.crmservice.service.UserService;
 import com.agilemonkeys.crmservice.service.UtilService;
 import org.slf4j.Logger;
@@ -33,14 +33,17 @@ public class UserController {
     @Autowired
     UtilService utilService;
 
+    @Autowired
+    MapService mapService;
+
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/users")
-    public UserDto newUser(@Valid @RequestBody NewUserDto userDto) throws DuplicateIdException {
+    public UserDto newUser(@Valid @RequestBody UserDto userDto) throws DuplicateIdException {
         logger.info("Inside saveUser of userController");
 
-        User user = utilService.dtoToUser(userDto);
+        User user = mapService.dtoToUser(userDto);
         Set<Role> roles = utilService.getRoles(userDto.getRolesName());
 
         user.setRoles(roles);
@@ -48,7 +51,7 @@ public class UserController {
 
         User userSaved = userService.save(user);
 
-        return utilService.userToDto(userSaved);
+        return mapService.userToDto(userSaved);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -58,7 +61,7 @@ public class UserController {
 
         return userService.getUsersList()
                 .stream()
-                .map(userDto->utilService.userToDto(userDto))
+                .map(userDto->mapService.userToDto(userDto))
                 .collect(Collectors.toList());
     }
 
@@ -73,9 +76,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{id}")
-    public UserDto updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) throws NotFoundException, DuplicateIdException {
+    public UserDto updateUser(@PathVariable("id") Long userId, @RequestBody UserDto userDto) throws NotFoundException, DuplicateIdException {
         logger.info("Inside updateUser of userController");
-        User user = utilService.dtoToUser(userDto);
+        User user = mapService.dtoToUser(userDto);
 
         if(StringUtils.hasText(user.getPassword())){
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -83,20 +86,20 @@ public class UserController {
 
         User userSaved = userService.updateUserById(userId, user);
 
-        return utilService.userToDto(userSaved);
+        return mapService.userToDto(userSaved);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/users/{id}")
-    public UserDto changeRoles(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) throws NotFoundException {
+    public UserDto changeRoles(@PathVariable("id") Long userId, @RequestBody UserDto userDto) throws NotFoundException {
         logger.info("Inside changeAdminStatus of userController");
-        User user = utilService.dtoToUser(userDto);
+        User user = mapService.dtoToUser(userDto);
         Set<Role> roles = utilService.getRoles(userDto.getRolesName());
 
         user.setRoles(roles);
 
         User userSaved = userService.changeAdminStatus(userId, user);
 
-        return utilService.userToDto(userSaved);
+        return mapService.userToDto(userSaved);
     }
 }

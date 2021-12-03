@@ -1,7 +1,7 @@
 package com.agilemonkeys.crmservice.security.controller;
 
+import com.agilemonkeys.crmservice.dto.UserDto;
 import com.agilemonkeys.crmservice.security.dto.JwtDto;
-import com.agilemonkeys.crmservice.security.dto.UserLogin;
 import com.agilemonkeys.crmservice.security.jwt.JwtProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class LoginController {
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @PostMapping("/login")
-    public JwtDto login(@Valid @RequestBody UserLogin userLogin) {
+    public JwtDto login(@Valid @RequestBody UserDto userLogin) {
         logger.info("Inside login of LoginController");
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

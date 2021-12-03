@@ -5,6 +5,7 @@ import com.agilemonkeys.crmservice.entity.Customer;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.security.entity.UserPrincipal;
 import com.agilemonkeys.crmservice.service.CustomerService;
+import com.agilemonkeys.crmservice.service.MapService;
 import com.agilemonkeys.crmservice.service.PhotoService;
 import com.agilemonkeys.crmservice.service.UtilService;
 import org.slf4j.Logger;
@@ -28,19 +29,22 @@ public class CustomerController {
     @Autowired
     private UtilService utilService;
 
+    @Autowired
+    private MapService mapService;
+
     private final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     @PostMapping("/customers")
-    public CustomerDto saveCustomer(@Valid @RequestBody CustomerDto customerDto, Authentication authentication) {
+    public CustomerDto saveCustomer(@RequestBody CustomerDto customerDto, Authentication authentication) {
         logger.info("Inside saveCustomer of customerController");
-        Customer customer = utilService.dtoToCustomer(customerDto);
+        Customer customer = mapService.dtoToCustomer(customerDto);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         customer.setCreatedBy(userPrincipal.getUserId());
 
         Customer customerSaved = customerService.saveCustomer(customer);
 
-        return utilService.customerToDto(customerSaved);
+        return mapService.customerToDto(customerSaved);
     }
 
     @GetMapping("/customers")
@@ -49,7 +53,7 @@ public class CustomerController {
 
         return customerService.getCustomersList()
                 .stream()
-                .map (customerDto->utilService.customerToDto(customerDto))
+                .map (customerDto->mapService.customerToDto(customerDto))
                 .collect(Collectors.toList());
     }
 
@@ -58,14 +62,14 @@ public class CustomerController {
                                       @Valid @RequestBody CustomerDto customerDto,
                                       Authentication authentication) throws NotFoundException {
         logger.info("Inside updateCustomer of customerController");
-        Customer customer = utilService.dtoToCustomer(customerDto);
+        Customer customer = mapService.dtoToCustomer(customerDto);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         customer.setUpdatedBy(userPrincipal.getUserId());
 
         Customer customerSaved = customerService.updateCustomerById(customerId, customer);
 
-        return utilService.customerToDto(customerSaved);
+        return mapService.customerToDto(customerSaved);
     }
 
     @GetMapping("/customers/{id}")
@@ -73,7 +77,7 @@ public class CustomerController {
         logger.info("Inside getCustomer of customerController");
         Customer customer = customerService.getCustomerById(customerId);
 
-        CustomerDto customerDto = utilService.customerToDto(customer);
+        CustomerDto customerDto = mapService.customerToDto(customer);
 
         if (photoService.isPhotoExist(customerId)) {
             customerDto.setImageUrl(utilService.getImageUrl(customerId));
