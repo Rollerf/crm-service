@@ -3,7 +3,6 @@ package com.agilemonkeys.crmservice.service;
 import com.agilemonkeys.crmservice.entity.Customer;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.repository.CustomerRepository;
-import com.agilemonkeys.crmservice.repository.PhotoRepository;
 import com.agilemonkeys.crmservice.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
     CustomerRepository customerRepository;
 
     @Autowired
-    PhotoRepository photoRepository;
+    PhotoService photoService;
 
     @Override
     public Customer saveCustomer(Customer customer) {
@@ -52,6 +52,10 @@ public class CustomerServiceImpl implements CustomerService {
             customerDB.setUpdatedBy(customer.getUpdatedBy());
         }
 
+        if (Objects.nonNull(customer.getPhotoUrl())) {
+            customerDB.setPhotoUrl(customer.getPhotoUrl());
+        }
+
         return customerRepository.save(customerDB);
     }
 
@@ -63,12 +67,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomerById(Long customerId) throws NotFoundException {
-        if (photoRepository.existsById(customerId)) {
-            photoRepository.deleteById(customerId);
-        }
-
-        if(customerRepository.existsById(customerId)){
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (customer.isPresent()) {
             customerRepository.deleteById(customerId);
+            photoService.deletePhoto(customer.get());
         } else {
             throw new NotFoundException(Constants.INVALID_CUSTOMER_ID);
         }

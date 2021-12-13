@@ -6,8 +6,6 @@ import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.security.entity.UserPrincipal;
 import com.agilemonkeys.crmservice.service.CustomerService;
 import com.agilemonkeys.crmservice.service.MapService;
-import com.agilemonkeys.crmservice.service.PhotoService;
-import com.agilemonkeys.crmservice.service.UtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +20,6 @@ import java.util.stream.Collectors;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
-
-    @Autowired
-    private PhotoService photoService;
-
-    @Autowired
-    private UtilService utilService;
 
     @Autowired
     private MapService mapService;
@@ -77,13 +69,7 @@ public class CustomerController {
         logger.info("Inside getCustomer of customerController");
         Customer customer = customerService.getCustomerById(customerId);
 
-        CustomerDto customerDto = mapService.customerToDto(customer);
-
-        if (photoService.isPhotoExist(customerId)) {
-            customerDto.setImageUrl(utilService.getImageUrl(customerId));
-        }
-
-        return customerDto;
+        return mapService.customerToDto(customer);
     }
 
     @DeleteMapping("/customers/{id}")

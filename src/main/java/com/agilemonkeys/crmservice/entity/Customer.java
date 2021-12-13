@@ -21,6 +21,5 @@ public class Customer {
     private String surname;
     private Long createdBy;
     private Long updatedBy;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer", optional = false)
-    private Photo photo;
+    private String photoUrl;
 }

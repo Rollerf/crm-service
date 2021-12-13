@@ -1,20 +1,19 @@
 package com.agilemonkeys.crmservice.controller;
 
 import com.agilemonkeys.crmservice.entity.Customer;
-import com.agilemonkeys.crmservice.entity.Photo;
 import com.agilemonkeys.crmservice.error.NotFoundException;
+import com.agilemonkeys.crmservice.security.entity.UserPrincipal;
 import com.agilemonkeys.crmservice.service.CustomerService;
 import com.agilemonkeys.crmservice.service.PhotoService;
+import com.agilemonkeys.crmservice.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.io.OutputStream;
 
 @RestController
 public class PhotoController {
@@ -26,64 +25,41 @@ public class PhotoController {
     private final Logger logger = LoggerFactory.getLogger(PhotoController.class);
 
     @PostMapping("/photos/{id}")
-    public String uploadFile(@PathVariable("id") Long customerId, @Valid @RequestParam("file") MultipartFile file) throws IOException, NotFoundException {
+    public ResponseEntity<Object> uploadFile(@PathVariable("id") Long customerId, @RequestParam("file") MultipartFile multipartFile, Authentication authentication) throws NotFoundException {
         logger.info("Inside savePhoto of photoController");
 
-        Customer customer = customerService.getCustomerById(customerId);
-        Photo photo = mapToPhoto(file, customer);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        photo.setCustomer(customer);
-
-        photoService.savePhoto(photo);
-
-        return "Photo added successfully";
-    }
-
-    @GetMapping(value = "/photos/{id}")
-    public void getPhoto(@PathVariable("id") Long customerId, HttpServletResponse response) throws IOException, NotFoundException {
-        logger.info("Inside getPhoto of photoController");
-
-        Photo photo = photoService.getPhotoById(customerId);
-
-        try (OutputStream os = response.getOutputStream()) {
-            os.write(photo.getContentBytes());
-        } catch (IOException e) {
-            throw new IOException(e);
+        if (multipartFile.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.INVALID_PHOTO);
         }
 
-        response.setContentType(photo.getContentType());
-        response.setContentLengthLong(photo.getSize());
+        return ResponseEntity.ok(photoService.uploadPhoto(multipartFile, customerId, userPrincipal.getUserId()));
     }
 
     @PutMapping("/photos/{id}")
-    public String updatePhoto(@PathVariable("id") Long customerId, @Valid @RequestParam("file") MultipartFile file) throws IOException, NotFoundException {
+    public ResponseEntity<String> updatePhoto(@PathVariable("id") Long customerId, @RequestParam("file") MultipartFile multipartFile, Authentication authentication) throws NotFoundException {
         logger.info("Inside updatePhoto of photoController");
 
+        if (multipartFile.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Constants.INVALID_PHOTO);
+        }
+
         Customer customer = customerService.getCustomerById(customerId);
-        Photo photo = mapToPhoto(file, customer);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        photoService.updatePhotoById(customerId, photo);
+        photoService.deletePhoto(customer, userPrincipal.getUserId());
 
-        return "Photo updated successfully";
+        return ResponseEntity.ok(photoService.uploadPhoto(multipartFile, customerId, userPrincipal.getUserId()));
     }
 
     @DeleteMapping("/photos/{id}")
-    public String deletePhotoById(@PathVariable("id") Long customerId) throws NotFoundException {
+    public String deletePhotoById(@PathVariable("id") Long customerId, Authentication authentication){
         logger.info("Inside deletePhotoById of photoController");
 
-        photoService.deletePhotoById(customerId);
+        Customer customer = customerService.getCustomerById(customerId);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        return "Photo deleted successfully";
-    }
-
-    private Photo mapToPhoto(MultipartFile multipartFile, Customer customer) throws IOException {
-        Photo photo = new Photo();
-
-        photo.setContentBytes(multipartFile.getBytes());
-        photo.setContentType(multipartFile.getContentType());
-        photo.setSize(multipartFile.getSize());
-        photo.setCustomer(customer);
-
-        return photo;
+        return photoService.deletePhoto(customer, userPrincipal.getUserId());
     }
 }

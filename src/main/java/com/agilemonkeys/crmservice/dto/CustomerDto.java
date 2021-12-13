@@ -15,5 +15,5 @@ public class CustomerDto {
     private String surname;
     private Long createdBy;
     private Long updatedBy;
-    private String imageUrl;
+    private String photoUrl;
 }

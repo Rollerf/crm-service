@@ -5,9 +5,9 @@ import com.agilemonkeys.crmservice.entity.User;
 import com.agilemonkeys.crmservice.error.DuplicateIdException;
 import com.agilemonkeys.crmservice.error.NotFoundException;
 import com.agilemonkeys.crmservice.security.entity.Role;
+import com.agilemonkeys.crmservice.security.service.RoleService;
 import com.agilemonkeys.crmservice.service.MapService;
 import com.agilemonkeys.crmservice.service.UserService;
-import com.agilemonkeys.crmservice.service.UtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    UtilService utilService;
+    RoleService roleService;
 
     @Autowired
     MapService mapService;
@@ -44,7 +44,7 @@ public class UserController {
         logger.info("Inside saveUser of userController");
 
         User user = mapService.dtoToUser(userDto);
-        Set<Role> roles = utilService.getRoles(userDto.getRolesName());
+        Set<Role> roles = roleService.getRoles(userDto.getRolesName());
 
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -94,7 +94,7 @@ public class UserController {
     public UserDto changeRoles(@PathVariable("id") Long userId, @RequestBody UserDto userDto) throws NotFoundException {
         logger.info("Inside changeAdminStatus of userController");
         User user = mapService.dtoToUser(userDto);
-        Set<Role> roles = utilService.getRoles(userDto.getRolesName());
+        Set<Role> roles = roleService.getRoles(userDto.getRolesName());
 
         user.setRoles(roles);
 
