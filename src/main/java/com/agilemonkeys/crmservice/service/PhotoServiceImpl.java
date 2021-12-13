@@ -59,7 +59,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     public String uploadPhoto(MultipartFile multipartFile, Long customerId, Long userId) throws NotFoundException {
         String extension = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
-        String fileName = "photo_user_" + customerId + extension;
+        String fileName = "photo_customer_" + customerId + extension;
         String photoUrl = endpointUrl + "/" + bucketName + "/" + fileName;
         Customer customer = Customer.builder().customerId(customerId).photoUrl(photoUrl).updatedBy(userId).build();
 
