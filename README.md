@@ -16,6 +16,16 @@ docker run -d -p 33070:5432 --name crm-service-db  -e POSTGRES_PASSWORD=password
 
 After that you have to make the database inserts, with the roles and admin user for login. I let an insert.sql document for it.
 
+### Credentials for AWS s3 service:
+You'll need put your credentials in the application.yml like this:
+```bash
+amazonProperties:
+  endpointUrl:
+  accessKey:
+  secretKey:
+  bucketName:
+```
+
 ### Deployment project:
 After you test the project, you can make a deployment using docker-compose.
 First you must generate a jar file. You can use this command for generated it:
