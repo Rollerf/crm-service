@@ -1,5 +1,6 @@
 package com.agilemonkeys.crmservice.entity;
 
+import com.agilemonkeys.crmservice.audition.entity.Auditable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @Getter
 @Setter
-public class Customer {
+public class Customer extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
@@ -19,7 +20,5 @@ public class Customer {
     private String name;
     @NotBlank
     private String surname;
-    private Long createdBy;
-    private Long updatedBy;
     private String photoUrl;
 }

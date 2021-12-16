@@ -61,7 +61,7 @@ public class PhotoServiceImpl implements PhotoService {
         String extension = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
         String fileName = "photo_customer_" + customerId + extension;
         String photoUrl = endpointUrl + "/" + bucketName + "/" + fileName;
-        Customer customer = Customer.builder().customerId(customerId).photoUrl(photoUrl).updatedBy(userId).build();
+        Customer customer = Customer.builder().customerId(customerId).photoUrl(photoUrl).build();
 
         try {
             uploadPhotoToS3(multipartFile, fileName);
@@ -81,7 +81,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         String photoUrl = customer.getPhotoUrl();
         String fileName = photoUrl.substring(photoUrl.lastIndexOf("/") + 1);
-        Customer customerSaved = Customer.builder().customerId(customer.getCustomerId()).photoUrl("").updatedBy(userId).build();
+        Customer customerSaved = Customer.builder().customerId(customer.getCustomerId()).photoUrl("").build();
 
         s3Client.deleteObject(new DeleteObjectRequest(bucketName + "/", fileName));
         customerService.updateCustomerById(customer.getCustomerId(), customerSaved);

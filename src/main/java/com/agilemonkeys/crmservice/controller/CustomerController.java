@@ -30,10 +30,6 @@ public class CustomerController {
     public CustomerDto saveCustomer(@RequestBody CustomerDto customerDto, Authentication authentication) {
         logger.info("Inside saveCustomer of customerController");
         Customer customer = mapService.dtoToCustomer(customerDto);
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-        customer.setCreatedBy(userPrincipal.getUserId());
-
         Customer customerSaved = customerService.saveCustomer(customer);
 
         return mapService.customerToDto(customerSaved);
