@@ -8,11 +8,11 @@
         <version>2.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.agilemonkeys</groupId>
+    <groupId>com.crm-service</groupId>
     <artifactId>crm-service</artifactId>
     <version>1.0.0</version>
     <name>crm-service</name>
-    <description>Test for agile monkeys</description>
+    <description>API Spring Boot</description>
     <properties>
         <java.version>11</java.version>
     </properties>

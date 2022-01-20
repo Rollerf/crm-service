@@ -17,13 +17,14 @@ docker run -d -p 33070:5432 --name crm-service-db  -e POSTGRES_PASSWORD=password
 After that you have to make the database inserts, with the roles and admin user for login. I let an insert.sql document for it.
 
 ### Credentials for AWS s3 service:
-You'll need put your credentials in the application.yml like this:
+You'll need put your credentials in the folder resources with file name "aws-credentials.json"
 ```bash
-amazonProperties:
-  endpointUrl:
-  accessKey:
-  secretKey:
-  bucketName:
+{
+  "endpointUrl": "",
+  "accessKey": "",
+  "secretKey": "",
+  "bucketName": ""
+}
 ```
 
 ### Deployment project:

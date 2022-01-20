@@ -32,6 +32,7 @@ management:
       exposure:
         include: "*"
         exclude: "env,beans"
+amazon.credentials: /aws-credentials.json
 
 ---
 
@@ -54,3 +55,4 @@ jwt:
 logging:
   level:
     web: ${LOG_LEVEL:WARN}
+amazon.credentials: /aws-credentials.json
